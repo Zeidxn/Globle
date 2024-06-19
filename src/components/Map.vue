@@ -12,26 +12,34 @@ mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 @Component
 class Map extends Vue {
   map!: mapboxgl.Map;
-  init = false;
+  initCountry = false;
+  initCountriesSubmited = false;
   declare $refs: {
     mapContainer: HTMLElement;
   };
 
   @Watch("$store.state.country", { immediate: true, deep: true })
   onCountryChange(newVal: string, oldVal: string) {
-    if (this.init) {
-      console.log(this.$store.state.country);
-
+    if (this.initCountry) {
       this.updateData();
     } else {
-      this.init = true;
+      this.initCountry = true;
+    }
+  }
+
+  @Watch("$store.state.countriesSubmited", { immediate: true, deep: true })
+  onCountriesSubmitedChange(newVal: string, oldVal: string) {
+    if (this.initCountriesSubmited) {
+      this.updateData();
+    } else {
+      this.initCountriesSubmited = true;
     }
   }
 
   mounted() {
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
-      style: "mapbox://styles/ntoupin411/clxlpz1pb00fw01qr2tafcyhl",
+      style: "mapbox://styles/ntoupin411/clxltf5nt00go01pdgq5e0oh7",
       center: [2.213749, 46.227638],
       zoom: 2,
     });
@@ -42,16 +50,8 @@ class Map extends Vue {
         url: "mapbox://mapbox.country-boundaries-v1",
       });
 
-      this.$store.commit("addCountrySubmited", {
-        code: "FRA",
-        name: "France",
-        hdi: 1,
-      });
-
       this.updateData();
     });
-
-    this.init = true;
   }
 
   updateData() {
@@ -60,11 +60,8 @@ class Map extends Vue {
       ["get", "iso_3166_1_alpha_3"],
     ] as mapboxgl.Expression;
 
-    for (const row of this.$store.state.countriesSubmited) {
-      const green = Math.floor(row["hdi"] * 255);
-      const color = `rgb(0, ${green}, 0)`;
-
-      matchExpression.push(row["code"], color);
+    for (const country of this.$store.state.countriesSubmited) {
+      matchExpression.push(country["code"], country["color"]);
     }
 
     matchExpression.push("rgba(0, 0, 0, 0)");
