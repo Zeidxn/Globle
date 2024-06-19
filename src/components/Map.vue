@@ -6,6 +6,13 @@
 import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+//recuperer la taille de l'ecran
+import { ref } from "vue";
+
+const screenSize = ref({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
 
 mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -13,6 +20,7 @@ mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 class Map extends Vue {
   map!: mapboxgl.Map;
   init = false;
+  initCountriesSubmited = false;
   declare $refs: {
     mapContainer: HTMLElement;
   };
@@ -28,12 +36,24 @@ class Map extends Vue {
     }
   }
 
+  @Watch("$store.state.countriesSubmited", { immediate: true, deep: true })
+  onCountriesSubmitedChange(newVal: string, oldVal: string) {
+    if (this.initCountriesSubmited) {
+      console.log(this.$store.state.countriesSubmited);
+      this.updateData();
+    } else {
+      this.initCountriesSubmited = true;
+    }
+  }
+
   mounted() {
+    console.log(screenSize.value.width);
+
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
       style: "mapbox://styles/ntoupin411/clxlpz1pb00fw01qr2tafcyhl",
       center: [2.213749, 46.227638],
-      zoom: 2,
+      zoom: screenSize.value.width < 600 ? 0 : 2,
     });
 
     this.map.on("load", () => {
@@ -42,16 +62,8 @@ class Map extends Vue {
         url: "mapbox://mapbox.country-boundaries-v1",
       });
 
-      this.$store.commit("addCountrySubmited", {
-        code: "FRA",
-        name: "France",
-        hdi: 1,
-      });
-
       this.updateData();
     });
-
-    this.init = true;
   }
 
   updateData() {

@@ -1,19 +1,17 @@
 <template>
   <v-app>
     <v-main>
-      <Map />
-      <Game />
+      <Globle />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue, toNative } from "vue-facing-decorator";
-import Map from "./components/Map.vue";
-import Game from "./components/Game.vue";
 
+import Globle from "./views/Globle.vue";
 @Component({
-  components: { Map, Game },
+  components: { Globle },
 })
 class App extends Vue {}
 
