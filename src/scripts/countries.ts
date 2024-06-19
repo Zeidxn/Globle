@@ -1,10 +1,5 @@
 import * as jsonCountries from "@/store/countries.json";
-
-interface Country {
-  code: string;
-  name: string;
-  eu: boolean;
-}
+import { Country } from "@/scripts/interfaces";
 
 const countries: Country[] = jsonCountries;
 
@@ -17,16 +12,15 @@ function normalizeCountryName(countryName: string): string {
   return uppercased;
 }
 
-export function getCountryCodeByName(countryName: string): string | null {
-  const upperCaseName = normalizeCountryName(countryName);
+export function getAllCountries(): Country[] {
+  const countriesNormalized: Country[] = [];
 
   for (let i = 0; i < countries.length; i++) {
     const country = countries[i];
+    country.name = normalizeCountryName(country.name);
 
-    if (normalizeCountryName(country.name) === upperCaseName) {
-      return country.code;
-    }
+    countriesNormalized.push(country);
   }
 
-  return null;
+  return countriesNormalized;
 }

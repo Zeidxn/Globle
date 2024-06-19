@@ -1,28 +1,23 @@
 <template>
   <v-app>
     <v-main>
-      <HelloWorld />
+      <Map />
+      <Game />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { Component, Vue, toNative } from "vue-facing-decorator";
+import Map from "./components/Map.vue";
+import Game from "./components/Game.vue";
 
-export default defineComponent({
-  name: "App",
+@Component({
+  components: { Map, Game },
+})
+class App extends Vue {}
 
-  components: {
-    HelloWorld,
-  },
-
-  data() {
-    return {
-      //
-    };
-  },
-});
+export default toNative(App);
 </script>
 
 <style>
