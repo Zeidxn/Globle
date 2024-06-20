@@ -48,7 +48,7 @@ class Map extends Vue {
 
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
-      style: "mapbox://styles/ntoupin411/clxltf5nt00go01pdgq5e0oh7",
+      style: "mapbox://styles/ntoupin411/clxn4ewph00jb01qmdjttct6y",
       center: [2.213749, 46.227638],
       zoom: screenSize.value.width < 600 ? 0 : 2,
     });
@@ -122,6 +122,6 @@ body {
   top: 0;
   bottom: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 2;
 }
 </style>
