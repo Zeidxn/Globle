@@ -22,6 +22,7 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 import { Country } from "@/scripts/interfaces";
 import { getAllCountries } from "@/scripts/countries";
 import EndDialog from "./EndDialog.vue";
+import { getColorByDistanceBetweenCountry } from "@/scripts/calcul";
 
 @Component({
   components: { EndDialog },
@@ -45,6 +46,17 @@ class Game extends Vue {
   }
 
   submit() {
+    const index = this.countries.indexOf(this.countrySelected!);
+
+    if (this.countrySelected!.name === this.$store.state.country.name) {
+      console.log("Vous avez gagné !");
+    }
+
+    this.countrySelected!.color = getColorByDistanceBetweenCountry(
+      this.$store.state.country,
+      this.countrySelected!
+    );
+
     this.$store.commit("addCountrySubmited", this.countrySelected);
     if (this.correctCountry?.name === this.countrySelected?.name) {
       this.showEndDialog = true;
@@ -53,6 +65,9 @@ class Game extends Vue {
         (country) => country.name !== this.countrySelected?.name
       );
     }
+
+    this.countries.splice(index, 1);
+
     this.countrySelected = null;
   }
 

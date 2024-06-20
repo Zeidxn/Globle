@@ -3,12 +3,18 @@ import { StoreState, Country } from "@/scripts/interfaces";
 
 export default createStore<StoreState>({
   state: {
-    country: "",
+    country: {
+      name: "",
+      code: "",
+      latitude: 0,
+      longitude: 0,
+      color: "rgb(0, 0, 0)",
+    },
     countriesSubmited: [],
   },
   getters: {},
   mutations: {
-    setCountry(state, country: string) {
+    setCountry(state, country: Country) {
       state.country = country;
       state.countriesSubmited = [];
     },

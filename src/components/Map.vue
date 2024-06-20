@@ -6,7 +6,6 @@
 import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-//recuperer la taille de l'ecran
 import { ref } from "vue";
 
 const screenSize = ref({
@@ -19,7 +18,7 @@ mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 @Component
 class Map extends Vue {
   map!: mapboxgl.Map;
-  init = false;
+  initCountry = false;
   initCountriesSubmited = false;
   declare $refs: {
     mapContainer: HTMLElement;
@@ -27,12 +26,10 @@ class Map extends Vue {
 
   @Watch("$store.state.country", { immediate: true, deep: true })
   onCountryChange(newVal: string, oldVal: string) {
-    if (this.init) {
-      console.log(this.$store.state.country);
-
+    if (this.initCountry) {
       this.updateData();
     } else {
-      this.init = true;
+      this.initCountry = true;
     }
   }
 
@@ -51,7 +48,7 @@ class Map extends Vue {
 
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
-      style: "mapbox://styles/ntoupin411/clxlpz1pb00fw01qr2tafcyhl",
+      style: "mapbox://styles/ntoupin411/clxltf5nt00go01pdgq5e0oh7",
       center: [2.213749, 46.227638],
       zoom: screenSize.value.width < 600 ? 0 : 2,
     });
@@ -72,11 +69,8 @@ class Map extends Vue {
       ["get", "iso_3166_1_alpha_3"],
     ] as mapboxgl.Expression;
 
-    for (const row of this.$store.state.countriesSubmited) {
-      const green = Math.floor(row["hdi"] * 255);
-      const color = `rgb(0, ${green}, 0)`;
-
-      matchExpression.push(row["code"], color);
+    for (const country of this.$store.state.countriesSubmited) {
+      matchExpression.push(country["code"], country["color"]);
     }
 
     matchExpression.push("rgba(0, 0, 0, 0)");

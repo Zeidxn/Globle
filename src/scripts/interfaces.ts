@@ -1,10 +1,12 @@
 export interface Country {
   code: string;
   name: string;
-  hdi: number;
+  latitude: number;
+  longitude: number;
+  color: string;
 }
 
 export interface StoreState {
-  country: string;
+  country: Country;
   countriesSubmited: Country[];
 }
