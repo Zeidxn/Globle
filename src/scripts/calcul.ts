@@ -29,55 +29,55 @@ function deg2rad(deg: number): number {
 
 function getColorByDistance(distance: number): string {
   if (distance === 0) {
-    return "rgb(0, 0, 255)";
-  }
-
-  // VERT
-  if (distance < 250) {
-    return "rgb(0, 255, 0)";
-  }
-
-  if (distance < 500) {
-    return "rgb(0, 204, 0)";
+    return "rgb(8,41,8)";
   }
 
   if (distance < 1000) {
-    return "rgb(0, 153, 0)";
+    return "rgb(0,76,0)";
+  }
+
+  if (distance < 1250) {
+    return "rgb(0,131,0)";
+  }
+
+  if (distance < 1500) {
+    return "rgb(0,149,0)";
+  }
+
+  if (distance < 2250) {
+    return "rgb(31,197,31)";
+  }
+  if (distance < 2500) {
+    return "rgb(91,193,13)";
   }
 
   if (distance < 2500) {
-    return "rgb(153, 153, 0)";
+    return "rgb(110,198,41)";
   }
 
-  // ORANGE
-  if (distance < 5000) {
-    return "rgb(255, 153, 51)";
+  if (distance < 3000) {
+    return "rgb(141,228,29)";
   }
 
-  if (distance < 7500) {
-    return "rgb(255, 128, 0)";
+  if (distance < 4000) {
+    return "rgb(187,255,109)";
+  }
+
+  if (distance < 6500) {
+    return "rgb(255,251,76)";
+  }
+
+  if (distance < 7000) {
+    return "rgb(255,159,95)";
+  }
+
+  if (distance < 8500) {
+    return "rgb(255,103,0)";
   }
 
   if (distance < 10000) {
-    return "rgb(204, 102, 0)";
+    return "rgb(255,69,69)";
   }
 
-  if (distance < 12500) {
-    return "rgb(153, 76, 0)";
-  }
-
-  // ROUGE
-  if (distance < 15000) {
-    return "rgb(255, 51, 51)";
-  }
-
-  if (distance < 17500) {
-    return "rgb(255, 0, 0)";
-  }
-
-  if (distance < 20000) {
-    return "rgb(204, 0, 0)";
-  }
-
-  return "rgb(153, 0, 0)";
+  return "rgb(255, 0, 0)";
 }

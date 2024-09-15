@@ -3,10 +3,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
+import { Component, toNative, Vue, Watch } from "vue-facing-decorator";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ref } from "vue";
+import { Country } from "@/scripts/interfaces";
 
 const screenSize = ref({
   width: window.innerWidth,
@@ -18,6 +19,8 @@ mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 @Component
 class Map extends Vue {
   map!: mapboxgl.Map;
+  popup!: mapboxgl.Popup | null;
+
   initCountry = false;
   initCountriesSubmited = false;
   declare $refs: {
@@ -44,8 +47,6 @@ class Map extends Vue {
   }
 
   mounted() {
-    console.log(screenSize.value.width);
-
     this.map = new mapboxgl.Map({
       container: this.$refs.mapContainer,
       style: "mapbox://styles/ntoupin411/clxn4ewph00jb01qmdjttct6y",
@@ -59,8 +60,54 @@ class Map extends Vue {
         url: "mapbox://mapbox.country-boundaries-v1",
       });
 
-      this.updateData();
+      this.setupHoverEffect();
     });
+
+    this.popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    });
+  }
+
+  setupHoverEffect() {
+    this.map.on("mousemove", "countries-join", (e) => {
+      const country = e.features?.[0];
+      if (country) {
+        const countryCode = country?.properties?.iso_3166_1_alpha_3;
+        const countryMap = this.getCountry(countryCode);
+        const countryName = countryMap?.name as string;
+        const countryColor = countryMap?.color;
+        if (countryColor) {
+          this.showCountryTooltip(e.lngLat, countryName);
+        } else {
+          this.hideCountryTooltip();
+        }
+      } else {
+        this.hideCountryTooltip();
+      }
+    });
+
+    this.map.on("mouseleave", "countries-join", () => {
+      this.hideCountryTooltip();
+    });
+  }
+
+  getCountry(countryCode: string): Country | null {
+    return this.$store.state.countriesSubmited.find(
+      (c: Country) => c.code === countryCode
+    );
+  }
+
+  showCountryTooltip(lngLat: mapboxgl.LngLat, countryName: string) {
+    if (this.popup) {
+      this.popup.setLngLat(lngLat).setText(countryName).addTo(this.map);
+    }
+  }
+
+  hideCountryTooltip() {
+    if (this.popup) {
+      this.popup.remove();
+    }
   }
 
   updateData() {

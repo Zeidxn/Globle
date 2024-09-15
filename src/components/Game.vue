@@ -1,38 +1,33 @@
 <template>
   <v-container class="game">
-    <v-btn color="primary" @click="newGame">New game</v-btn>
-    <v-container class="search-container">
-      <v-text-field
-        v-model="inputValue"
-        bg-color="white"
-        prepend-inner-icon="mdi-magnify"
-        item-title="name"
-        label="Select country"
-        return-object
-        clearable
-        @input="filterCountry($event)"
-        @keydown.esc="filteredCountries = []"
-        @keydown.enter="handleEnterKey"
-      ></v-text-field>
-      <v-list
-        v-if="filteredCountries.length > 0"
-        class="coutries-list elevation-5"
-      >
-        <v-list-item
-          v-for="country in filteredCountries"
-          :key="country.name"
-          @click="selectCountry(country)"
-        >
-          <v-list-item-title>{{ country.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-container>
-    <v-btn :disabled="countrySelected === null" color="primary" @click="submit"
-      >Submit</v-btn
-    >
+    <v-btn color="primary" @click="newGame" height="55">New game</v-btn>
+    <v-autocomplete
+      class="bg-white rounded-lg"
+      :value="inputValue"
+      :items="filteredCountries"
+      item-title="name"
+      max-width="800"
+      min-width="500"
+      label="Select country"
+      prepend-inner-icon="mdi-magnify"
+      menu-icon=""
+      :disabled="disableInput"
+      hide-details
+      autofocus
+      @input="filterCountry"
+      @keydown.enter="handleEnterKey"
+      @update:model-value="handleClickList"
+    ></v-autocomplete>
   </v-container>
-  <EndDialog v-if="showEndDialog" @click="handleCloseEndDialog" />
+  <EndDialog
+    v-if="showEndDialog"
+    @restart="handleRestartGame"
+    @close="handleCloseEndDialog"
+    :dialog="showEndDialog"
+    message="You have selected the correct country!"
+  />
 </template>
+
 <script lang="ts">
 import { Component, Vue, toNative } from "vue-facing-decorator";
 import { Country } from "@/scripts/interfaces";
@@ -51,22 +46,27 @@ class Game extends Vue {
   showEndDialog = false;
   filteredCountries: Country[] = [];
   inputValue = "";
+  disableInput = false;
 
   mounted() {
     this.newGame();
   }
 
   newGame() {
+    this.disableInput = false;
     this.countries = getAllCountries();
+    this.filteredCountries = this.countries;
+
     const randomIndex = Math.floor(Math.random() * this.countries.length);
     this.correctCountry = this.countries[randomIndex];
+    console.log(this.correctCountry);
     this.$store.commit("setCountry", this.correctCountry.name);
   }
 
   submit() {
     const index = this.countries.indexOf(this.countrySelected!);
 
-    if (this.countrySelected!.name === this.correctCountry?.name) {
+    if (this.countrySelected?.name === this.correctCountry?.name) {
       this.showEndDialog = true;
     }
 
@@ -78,17 +78,13 @@ class Game extends Vue {
     this.countries.splice(index, 1);
     this.countrySelected = null;
     this.inputValue = "";
-  }
-
-  handleCloseEndDialog() {
-    this.showEndDialog = false;
-    this.newGame();
+    this.filteredCountries = this.countries;
   }
 
   filterCountry(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
-      this.filteredCountries = [];
+      this.filteredCountries = this.countries;
       return;
     }
     this.filteredCountries = this.countries.filter((country) =>
@@ -99,34 +95,46 @@ class Game extends Vue {
   selectCountry(country: Country) {
     this.countrySelected = country;
     this.inputValue = country.name;
-    this.filteredCountries = [];
+    this.submit();
   }
 
   handleEnterKey() {
     if (this.filteredCountries.length > 0) {
       this.selectCountry(this.filteredCountries[0]);
-      this.submit();
     }
+  }
+
+  handleClickList(item: string) {
+    const country = this.countries.find((c) => c.name === item);
+    this.inputValue = item;
+    if (country && this.inputValue.length > 0) {
+      this.selectCountry(country);
+    }
+  }
+
+  handleRestartGame() {
+    this.showEndDialog = false;
+    this.newGame();
+  }
+
+  handleCloseEndDialog() {
+    this.showEndDialog = false;
+    this.disableInput = true;
   }
 }
 
 export default toNative(Game);
 </script>
+
 <style>
 .game {
-  width: 100%;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 10px;
   position: absolute;
-  z-index: 2;
-}
 
-.coutries-list {
-  position: absolute;
-  width: 85%;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 3;
+  z-index: 2;
 }
 </style>

@@ -700,7 +700,7 @@
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Iran, Islamic Republic of",
+    "name": "Iran",
     "code": "IRN",
     "latitude": 32,
     "longitude": 53,
@@ -791,15 +791,15 @@
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Korea, Democratic People's Republic of",
-    "code": "PRK",
+    "name": "North Korea",
+    "code": "NKO",
     "latitude": 40,
     "longitude": 127,
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Korea, Republic of",
-    "code": "KOR",
+    "name": "South Korea",
+    "code": "SKO",
     "latitude": 37,
     "longitude": 127.5,
     "color": "rgb(0, 0, 0)"
@@ -889,7 +889,7 @@
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Macedonia, the former Yugoslav Republic of",
+    "name": "Macedonia",
     "code": "MKD",
     "latitude": 41.8333,
     "longitude": 22,
@@ -1162,7 +1162,7 @@
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Palestinian Territory, Occupied",
+    "name": "Palestinia",
     "code": "PSE",
     "latitude": 32,
     "longitude": 35.25,
@@ -1253,7 +1253,7 @@
     "color": "rgb(0, 0, 0)"
   },
   {
-    "name": "Russian Federation",
+    "name": "Russia",
     "code": "RUS",
     "latitude": 60,
     "longitude": 100,
